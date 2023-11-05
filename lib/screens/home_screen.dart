@@ -12,6 +12,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool isNormal = false;
   List<String> masks = [
     "assets/user_image_frame_1.png",
     "assets/user_image_frame_2.png",
@@ -76,6 +77,18 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         title: const Text('Add Image / Icon'),
         centerTitle: true,
+        actions: [
+          TextButton(
+            onPressed: () {
+              setState(() {
+                isNormal = true;
+              });
+            },
+            child: const Text(
+              'Clear Overlay',
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -103,21 +116,30 @@ class _HomeScreenState extends State<HomeScreen> {
                   ? SizedBox(
                       height: size.height * 0.5,
                       width: size.width * 0.95,
-                      child: WidgetMask(
-                        childSaveLayer: true,
-                        blendMode: BlendMode.srcATop,
-                        mask: Image.file(
-                          File(
-                            _croppedFile != null
-                                ? _croppedFile!.path
-                                : _file!.path,
-                          ),
-                          fit: BoxFit.cover,
-                        ),
-                        child: Image.asset(
-                          masks[idx],
-                        ),
-                      ),
+                      child: isNormal
+                          ? Image.file(
+                              File(
+                                _croppedFile != null
+                                    ? _croppedFile!.path
+                                    : _file!.path,
+                              ),
+                              fit: BoxFit.cover,
+                            )
+                          : WidgetMask(
+                              childSaveLayer: true,
+                              blendMode: BlendMode.srcATop,
+                              mask: Image.file(
+                                File(
+                                  _croppedFile != null
+                                      ? _croppedFile!.path
+                                      : _file!.path,
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                              child: Image.asset(
+                                masks[idx],
+                              ),
+                            ),
                     )
                   : const SizedBox(),
               _file != null
@@ -190,6 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 onTap: () {
                                   setState(() {
                                     idx = ind;
+                                    isNormal = false;
                                   });
                                 },
                                 child: WidgetMask(
